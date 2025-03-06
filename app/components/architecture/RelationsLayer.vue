@@ -67,31 +67,33 @@ const calculateRelationPath = (relation) => {
   // Berechne die Basis-Mittellinie
   const baseMidX = (startX + endX) / 2
   
-  // Finde alle Verbindungen zwischen denselben Komponenten
-  const parallelConnections = props.relations.filter(r => 
-    (r.fromComponent === relation.fromComponent && r.toComponent === relation.toComponent) ||
-    (r.fromComponent === relation.toComponent && r.toComponent === relation.fromComponent)
-  )
+  // Finde alle Verbindungen, die von rechts nach links gehen
+  const rightToLeftConnections = props.relations.filter(r => {
+    const fromX = props.components.find(c => c.id === r.fromComponent)?.x + 300 - 15
+    const toX = props.components.find(c => c.id === r.toComponent)?.x + 15
+    return fromX > toX
+  })
   
-  // Bestimme den Index dieser Verbindung in der Gruppe paralleler Verbindungen
-  const connectionIndex = parallelConnections.indexOf(relation)
-  
-  // Berechne den horizontalen Offset basierend auf dem Index
-  const offset = (connectionIndex - (parallelConnections.length - 1) / 2) * 20
-  const midX = baseMidX + offset
+  // Bestimme den globalen Index dieser Verbindung unter allen R->L Verbindungen
+  const globalIndex = rightToLeftConnections.indexOf(relation)
 
   if (isRightToLeft) {
     // Finde die maximale Y-Position aller Komponenten plus Puffer
     const maxComponentY = Math.max(...props.components.map(c => c.y + 200))
-    // Berechne Y-Offset für parallele Linien
-    const yOffset = connectionIndex * 20
-    const bottomY = maxComponentY + yOffset
-
+    
+    // Berechne vertikalen Abstand zwischen den Linien
+    const verticalSpacing = 10
+    const bottomY = maxComponentY + (globalIndex * verticalSpacing)
+    
+    // Berechne horizontalen Abstand zwischen den Linien
+    const horizontalSpacing = 10
+    const xOffset = globalIndex * horizontalSpacing
+    
     return `M ${startX} ${startY} 
-            L ${startX + 20} ${startY} 
-            L ${startX + 20} ${bottomY} 
-            L ${endX - 20} ${bottomY} 
-            L ${endX - 20} ${endY} 
+            L ${startX + 60 + xOffset} ${startY} 
+            L ${startX + 60 + xOffset} ${bottomY} 
+            L ${endX - 60 - xOffset} ${bottomY} 
+            L ${endX - 60 - xOffset} ${endY} 
             L ${endX} ${endY}`
   }
 
