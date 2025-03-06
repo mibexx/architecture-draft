@@ -1,7 +1,7 @@
 <template>
   <div class="flex mb-4">
     <!-- Inputs on left -->
-    <div class="w-1/2">
+    <div class="w-1/2" :class="getTextColor('text-gray-500')">
       <div v-if="component.inputs.length">
         <div class="text-xs font-semibold mb-1">Inputs:</div>
         <div v-for="input in component.inputs" :key="input.id" class="flex items-center gap-2">
@@ -14,7 +14,8 @@
               @click.stop="$emit('input-click', input)"
             ></div>
             <button 
-              class="text-red-500 text-xs font-bold hover:text-red-700 export-hide"
+              :class="getTextColor('text-gray-500 hover:text-red-700')"
+              class="text-xs font-bold export-hide"
               @click.stop="$emit('remove-input', input.id)"
               @mousedown.stop
             >×</button>
@@ -38,7 +39,7 @@
     </div>
 
     <!-- Outputs on right -->
-    <div class="w-1/2 pl-2">
+    <div class="w-1/2 pl-2" :class="getTextColor('text-gray-500')">
       <div v-if="component.outputs.length">
         <div class="text-xs font-semibold mb-1">Outputs:</div>
         <div v-for="output in component.outputs" :key="output.id" class="flex items-center gap-2 justify-between">
@@ -58,7 +59,8 @@
               @mousedown.stop
             />
             <button 
-              class="text-red-500 text-xs font-bold hover:text-red-700 export-hide"
+              :class="getTextColor('text-gray-500 hover:text-red-700')"
+              class="text-xs font-bold export-hide"
               @click.stop="$emit('remove-output', output.id)"
               @mousedown.stop
             >×</button>
@@ -140,5 +142,20 @@ const startEditingOutput = (output) => {
 
 const stopEditingOutput = (output) => {
   output.editing = false
+}
+
+const getTextColor = (baseClasses) => {
+  if (!props.component.color) return baseClasses + ' text-gray-800'
+  
+  // Convert hex to RGB
+  const hex = props.component.color.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  
+  return baseClasses + (luminance > 0.6 ? ' text-gray-800' : ' text-white')
 }
 </script> 

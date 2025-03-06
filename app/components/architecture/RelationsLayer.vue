@@ -97,6 +97,6 @@ const calculateRelationPath = (relation) => {
             L ${endX} ${endY}`
   }
 
-  return `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${endY} L ${endX} ${endY}`
+  return `M ${startX} ${startY} L ${baseMidX} ${startY} L ${baseMidX} ${endY} L ${endX} ${endY}`
 }
 </script> 

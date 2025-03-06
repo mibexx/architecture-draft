@@ -1,8 +1,9 @@
 <template>
-  <div class="mb-2 relative flex items-center">
+  <div class="mb-2 relative flex items-start">
     <!-- Color picker button -->
     <button
-      class="text-gray-500 hover:text-gray-700 mr-2 export-hide"
+      :class="getTextColor('text-gray-500 hover:text-gray-700')"
+      class="mr-2 export-hide mt-1"
       @click.stop="$emit('color-pick', component)"
       @mousedown.stop
     >
@@ -12,26 +13,26 @@
     </button>
 
     <div class="flex-1">
-      <div v-if="!component.editingName" @click="startEditingName" class="font-semibold text-gray-800 cursor-pointer">
+      <div v-if="!component.editingName" @click="startEditingName" :class="[getTextColor('font-semibold'), 'cursor-pointer']">
         {{ component.name }}
       </div>
       <input
         v-else
         v-model="component.name"
-        class="font-semibold text-gray-800 bg-transparent focus:outline-none w-full"
+        :class="[getTextColor('font-semibold'), 'bg-transparent focus:outline-none w-full']"
         @blur="stopEditingName"
         @keyup.enter="stopEditingName"
         ref="nameInput"
         @click.stop
       />
 
-      <div v-if="!component.editingType" @click="startEditingType" class="text-sm text-gray-600 cursor-pointer">
+      <div v-if="!component.editingType" @click="startEditingType" :class="[getTextColor('text-sm'), 'cursor-pointer']">
         {{ component.type }}
       </div>
       <input
         v-else
         v-model="component.type"
-        class="text-sm text-gray-600 bg-transparent focus:outline-none w-full"
+        :class="[getTextColor('text-sm'), 'bg-transparent focus:outline-none w-full']"
         @blur="stopEditingType"
         @keyup.enter="stopEditingType"
         ref="typeInput"
@@ -41,7 +42,8 @@
 
     <!-- Delete component button -->
     <button
-      class="text-red-500 hover:text-red-700 ml-2 export-hide"
+      :class="getTextColor('text-gray-500 hover:text-gray-700')"
+      class="hover:text-red-700 ml-2 export-hide mt-1"
       @click.stop="$emit('delete')"
       @mousedown.stop
     >
@@ -69,6 +71,21 @@ const emit = defineEmits([
 
 const nameInput = ref(null)
 const typeInput = ref(null)
+
+const getTextColor = (baseClasses) => {
+  if (!props.component.color) return baseClasses + ' text-gray-800'
+  
+  // Convert hex to RGB
+  const hex = props.component.color.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  
+  return baseClasses + (luminance > 0.6 ? ' text-gray-800' : ' text-white')
+}
 
 const startEditingName = () => {
   props.component.editingName = true

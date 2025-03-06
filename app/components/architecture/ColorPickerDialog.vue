@@ -33,12 +33,21 @@
 import { defineProps, defineEmits, ref } from 'vue'
 
 const colors = [
-  '#f3f4f6',
-  '#fee2e2',
-  '#fef3c7',
-  '#dcfce7',
-  '#dbeafe',
-  '#f3e8ff'
+  '#FF9999', // coral
+  '#99FF99', // green
+  '#9999FF', // blue
+  '#FFFF99', // yellow
+  '#FF99FF', // pink
+  '#99FFFF', // cyan
+  '#FFB366', // orange
+  '#B366FF', // purple
+  '#66FFB3', // mint
+  '#FF6666', // red
+  '#66B3FF', // light blue
+  '#FFCC66', // gold
+  '#CC66FF', // violet
+  '#66FFCC', // turquoise
+  '#B3FF66'  // lime
 ]
 
 const props = defineProps({
