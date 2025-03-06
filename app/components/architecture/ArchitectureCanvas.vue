@@ -24,7 +24,6 @@
         <RelationsLayer 
           :relations="relations"
           :components="components"
-          @remove-relation="removeRelation"
         />
 
         <!-- Components -->
@@ -220,11 +219,17 @@ const removeOutput = (component, outputId) => {
   }
 }
 
-const removeRelation = (relationId) => {
-  relations.value = relations.value.filter(relation => relation.id !== relationId)
-}
-
 const handleOutputClick = (component, output) => {
+  // Prüfe, ob es eine existierende Relation für diesen Output gibt
+  const existingRelation = relations.value.find(r => r.outputId === output.id)
+  
+  if (existingRelation) {
+    // Wenn es eine Relation gibt, entferne sie
+    relations.value = relations.value.filter(r => r.outputId !== output.id)
+    return
+  }
+
+  // Normale Logik für das Erstellen einer neuen Relation
   if (selectedOutputId.value === output.id) {
     selectedOutputId.value = null
     selectedOutputComponent.value = null

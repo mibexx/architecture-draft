@@ -6,8 +6,6 @@
         :stroke="getRelationColor(relation)"
         stroke-width="2"
         fill="none"
-        style="pointer-events: all; cursor: pointer"
-        @click="$emit('remove-relation', relation.id)"
       />
     </g>
   </svg>
@@ -27,8 +25,6 @@ const props = defineProps({
   }
 })
 
-defineEmits(['remove-relation'])
-
 const getRelationColor = (relation) => {
   const fromComponent = props.components.find(c => c.id === relation.fromComponent)
   if (!fromComponent?.color) return '#666'
@@ -40,9 +36,9 @@ const getRelationColor = (relation) => {
   const b = parseInt(hex.substring(4, 6), 16)
   
   // Make color darker by reducing RGB values
-  const darkerR = Math.max(0, r - 40)
-  const darkerG = Math.max(0, g - 40)
-  const darkerB = Math.max(0, b - 40)
+  const darkerR = Math.max(0, r - 20)
+  const darkerG = Math.max(0, g - 20)
+  const darkerB = Math.max(0, b - 20)
   
   return `rgb(${darkerR}, ${darkerG}, ${darkerB})`
 }
@@ -92,10 +88,10 @@ const calculateRelationPath = (relation) => {
     const bottomY = maxComponentY + yOffset
 
     return `M ${startX} ${startY} 
-            L ${startX - 20} ${startY} 
-            L ${startX - 20} ${bottomY} 
-            L ${endX + 20} ${bottomY} 
-            L ${endX + 20} ${endY} 
+            L ${startX + 20} ${startY} 
+            L ${startX + 20} ${bottomY} 
+            L ${endX - 20} ${bottomY} 
+            L ${endX - 20} ${endY} 
             L ${endX} ${endY}`
   }
 
