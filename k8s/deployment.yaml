@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: architecture-draft
+  labels:
+    app: architecture-draft
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: architecture-draft
+  template:
+    metadata:
+      labels:
+        app: architecture-draft
+    spec:
+      containers:
+      - name: architecture-draft
+        image: mibexx/architecture-draft:1.0.0
+        ports:
+        - containerPort: 3000
