@@ -79,7 +79,13 @@ const calculateRelationPath = (relation) => {
 
   if (isRightToLeft) {
     // Finde die maximale Y-Position aller Komponenten plus Puffer
-    const maxComponentY = Math.max(...props.components.map(c => c.y + 200))
+    const maxComponentY = Math.max(...props.components.map(c => {
+      const baseHeight = c.y + 96 // Basis-Höhe
+      const maxInputsHeight = c.inputs.length * 16 // Höhe für Eingänge
+      const maxOutputsHeight = c.outputs.length * 16 // Höhe für Ausgänge
+      const maxHeight = Math.max(maxInputsHeight, maxOutputsHeight)
+      return baseHeight + maxHeight + 104 // Extra Puffer hinzufügen
+    }))
     
     // Berechne vertikalen Abstand zwischen den Linien
     const verticalSpacing = 10
