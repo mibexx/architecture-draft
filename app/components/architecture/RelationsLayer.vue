@@ -57,15 +57,47 @@ const calculateRelationPath = (relation) => {
   const output = fromComponent.outputs.find(o => o.id === relation.outputId)
   const outputIndex = fromComponent.outputs.indexOf(output)
   const startY = fromComponent.y + 96 + (outputIndex * 16)
-  const startX = fromComponent.x + 300 - 15 // Start from the blue dot
+  const startX = fromComponent.x + 300 - 15
 
   // Find the input point position
   const input = toComponent.inputs.find(i => i.id === relation.inputId)
   const inputIndex = toComponent.inputs.indexOf(input)
   const endY = toComponent.y + 96 + (inputIndex * 16)
-  const endX = toComponent.x + 15 // End at the green dot
+  const endX = toComponent.x + 15
 
-  const midX = (startX + endX) / 2
+  // Prüfe, ob die Verbindung von rechts nach links geht
+  const isRightToLeft = startX > endX
+
+  // Berechne die Basis-Mittellinie
+  const baseMidX = (startX + endX) / 2
+  
+  // Finde alle Verbindungen zwischen denselben Komponenten
+  const parallelConnections = props.relations.filter(r => 
+    (r.fromComponent === relation.fromComponent && r.toComponent === relation.toComponent) ||
+    (r.fromComponent === relation.toComponent && r.toComponent === relation.fromComponent)
+  )
+  
+  // Bestimme den Index dieser Verbindung in der Gruppe paralleler Verbindungen
+  const connectionIndex = parallelConnections.indexOf(relation)
+  
+  // Berechne den horizontalen Offset basierend auf dem Index
+  const offset = (connectionIndex - (parallelConnections.length - 1) / 2) * 20
+  const midX = baseMidX + offset
+
+  if (isRightToLeft) {
+    // Finde die maximale Y-Position aller Komponenten plus Puffer
+    const maxComponentY = Math.max(...props.components.map(c => c.y + 200))
+    // Berechne Y-Offset für parallele Linien
+    const yOffset = connectionIndex * 20
+    const bottomY = maxComponentY + yOffset
+
+    return `M ${startX} ${startY} 
+            L ${startX - 20} ${startY} 
+            L ${startX - 20} ${bottomY} 
+            L ${endX + 20} ${bottomY} 
+            L ${endX + 20} ${endY} 
+            L ${endX} ${endY}`
+  }
 
   return `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${endY} L ${endX} ${endY}`
 }
