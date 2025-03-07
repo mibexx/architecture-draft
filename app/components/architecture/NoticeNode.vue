@@ -6,7 +6,7 @@
       top: `${notice.y}px`,
       backgroundColor: notice.color,
       color: getTextColor(notice.color),
-      zIndex: 90
+      zIndex: 150
     }"
     @mousedown="$emit('drag-start', $event, notice)"
   >

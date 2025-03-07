@@ -8,7 +8,8 @@
       position: 'absolute', 
       zIndex: 20,
       backgroundColor: component.color || '#f3f4f6',
-      minHeight: '120px'
+      minHeight: '120px',
+      zIndex: 50
     }"
     @mousedown="startDrag"
     :data-component-id="component.id"

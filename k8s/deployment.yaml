@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: architecture-draft
-        image: mibexx/architecture-draft:1.4.0
+        image: mibexx/architecture-draft:1.5.0
         ports:
         - containerPort: 3000
