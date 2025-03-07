@@ -12,7 +12,7 @@
   >
     <div class="p-4 rounded-lg shadow-lg min-w-[200px]">
       <!-- Header with delete and color buttons -->
-      <div class="flex justify-end gap-2 mb-2">
+      <div class="flex justify-end gap-2 mb-2 export-hide">
         <button
           :class="`hover:text-gray-800 ${getTextColor(notice.color)}`"
           @click="$emit('color-pick', notice)"
