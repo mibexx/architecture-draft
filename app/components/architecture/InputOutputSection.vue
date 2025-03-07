@@ -5,27 +5,29 @@
       <div v-if="component.inputs.length">
         <div class="text-xs font-semibold mb-1">Inputs:</div>
         <div v-for="input in component.inputs" :key="input.id" class="flex items-center gap-2">
-          <div class="flex items-center gap-1">
+          <div class="flex-none flex items-center gap-1">
             <div 
               class="w-3 h-3 bg-green-500 rounded-full cursor-pointer hover:ring-2 hover:ring-green-300"
               :class="{'ring-2 ring-green-500 ring-offset-2': selectedOutputId}"
               :data-input-id="input.id"
               :data-component-id="component.id"
               @click.stop="$emit('input-click', input)"
-            ></div>
+            >&nbsp;</div>
             <button 
               :class="getTextColor('text-gray-500 hover:text-red-700')"
               class="text-xs font-bold export-hide"
               @click.stop="$emit('remove-input', input.id)"
               @mousedown.stop
             >×</button>
-            <div v-if="!input.editing" @click="startEditingInput(input)" class="text-xs cursor-pointer flex-1 min-w-0">
+          </div>
+          <div class="flex-1 min-w-0">
+            <div v-if="!input.editing" @click="startEditingInput(input)" class="text-xs cursor-pointer">
               {{ input.name || 'Input name' }}
             </div>
             <input 
               v-else
               v-model="input.name"
-              class="text-xs bg-transparent border-b border-gray-300 focus:outline-none flex-1 min-w-0"
+              class="text-xs bg-transparent border-b border-gray-300 focus:outline-none w-full"
               placeholder="Input name"
               @blur="stopEditingInput(input)"
               @keyup.enter="stopEditingInput(input)"
@@ -42,15 +44,15 @@
     <div class="w-1/2 pl-2" :class="getTextColor('text-gray-500')">
       <div v-if="component.outputs.length">
         <div class="text-xs font-semibold mb-1">Outputs:</div>
-        <div v-for="output in component.outputs" :key="output.id" class="flex items-center gap-2 justify-between">
-          <div class="flex items-center gap-1 flex-1">
-            <div v-if="!output.editing" @click="startEditingOutput(output)" class="text-xs cursor-pointer flex-1 min-w-0">
+        <div v-for="output in component.outputs" :key="output.id" class="flex items-center gap-2">
+          <div class="flex-1 min-w-0">
+            <div v-if="!output.editing" @click="startEditingOutput(output)" class="text-xs cursor-pointer text-right">
               {{ output.name || 'Output name' }}
             </div>
             <input 
               v-else
               v-model="output.name"
-              class="text-xs bg-transparent border-b border-gray-300 focus:outline-none flex-1 min-w-0"
+              class="text-xs bg-transparent border-b border-gray-300 focus:outline-none w-full text-right"
               placeholder="Output name"
               @blur="stopEditingOutput(output)"
               @keyup.enter="stopEditingOutput(output)"
@@ -58,6 +60,8 @@
               @click.stop
               @mousedown.stop
             />
+          </div>
+          <div class="flex-none flex items-center gap-1">
             <button 
               :class="getTextColor('text-gray-500 hover:text-red-700')"
               class="text-xs font-bold export-hide"
@@ -70,7 +74,7 @@
               :data-output-id="output.id"
               :data-component-id="component.id"
               @click.stop="$emit('output-click', output)"
-            ></div>
+            >&nbsp;</div>
           </div>
         </div>
       </div>

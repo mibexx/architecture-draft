@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="absolute p-4 rounded-lg shadow cursor-move"
+    class="absolute p-4 rounded-lg shadow cursor-move flex flex-col"
     :style="{ 
       left: component.x + 'px', 
       top: component.y + 'px', 
@@ -8,29 +8,32 @@
       position: 'absolute', 
       zIndex: 20,
       backgroundColor: component.color || '#f3f4f6',
-      paddingBottom: '2rem'
+      minHeight: '120px'
     }"
     @mousedown="startDrag"
     :data-component-id="component.id"
   >
-    <ComponentHeader 
-      :component="component"
-      @delete="$emit('delete', component.id)"
-      @color-pick="$emit('color-pick', component)"
-    />
-    
-    <InputOutputSection 
-      :component="component"
-      @add-input="$emit('add-input', component)"
-      @add-output="$emit('add-output', component)"
-      @remove-input="$emit('remove-input', component, $event)"
-      @remove-output="$emit('remove-output', component, $event)"
-      @input-click="$emit('input-click', component, $event)"
-      @output-click="$emit('output-click', component, $event)"
-    />
+    <!-- Main content -->
+    <div class="flex-1">
+      <ComponentHeader 
+        :component="component"
+        @delete="$emit('delete', component.id)"
+        @color-pick="$emit('color-pick', component)"
+      />
+      
+      <InputOutputSection 
+        :component="component"
+        @add-input="$emit('add-input', component)"
+        @add-output="$emit('add-output', component)"
+        @remove-input="$emit('remove-input', component, $event)"
+        @remove-output="$emit('remove-output', component, $event)"
+        @input-click="$emit('input-click', component, $event)"
+        @output-click="$emit('output-click', component, $event)"
+      />
+    </div>
 
     <!-- Footer with controls -->
-    <div class="absolute bottom-2 left-0 right-0 px-4 flex justify-between items-center export-hide">
+    <div class="flex justify-between items-center mt-4 export-hide">
       <!-- Color picker button -->
       <button
         :class="getTextColor('text-gray-500 hover:text-gray-700')"
