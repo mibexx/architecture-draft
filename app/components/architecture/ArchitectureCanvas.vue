@@ -41,6 +41,16 @@
           @output-click="handleOutputClick"
           @drag-start="startDrag"
         />
+
+        <!-- Notices -->
+        <NoticeNode
+          v-for="notice in notices"
+          :key="notice.id"
+          :notice="notice"
+          @delete="deleteComponent"
+          @color-pick="openColorPicker"
+          @drag-start="startDrag"
+        />
       </div>
     </div>
 
@@ -62,8 +72,10 @@ import ComponentNode from './ComponentNode.vue'
 import RelationsLayer from './RelationsLayer.vue'
 import ColorPickerDialog from './ColorPickerDialog.vue'
 import CanvasHeader from './CanvasHeader.vue'
+import NoticeNode from './NoticeNode.vue'
 
 const components = ref([])
+const notices = ref([])
 const canvas = ref(null)
 let draggedComponent = null
 let initialMousePosition = { x: 0, y: 0 }
@@ -130,7 +142,7 @@ const onCanvasMouseUp = () => {
   isPanning = false
 }
 
-const findNonCollidingPosition = (newComponent) => {
+const findNonCollidingPosition = () => {
   const componentWidth = 300
   const componentHeight = 150
   const padding = 20
@@ -139,10 +151,9 @@ const findNonCollidingPosition = (newComponent) => {
   let collision = true
   
   while (collision) {
-    collision = components.value.some(component => {
-      if (component.id === newComponent.id) return false
-      return Math.abs(component.x - x) < (componentWidth + padding) &&
-             Math.abs(component.y - y) < (componentHeight + padding)
+    collision = [...components.value, ...notices.value].some(item => {
+      return Math.abs(item.x - x) < (componentWidth + padding) &&
+             Math.abs(item.y - y) < (componentHeight + padding)
     })
     
     if (collision) {
@@ -161,31 +172,40 @@ const generateUniqueId = () => {
   return Math.random().toString(36).substr(2, 9)
 }
 
-const addComponent = () => {
-  const newComponent = {
-    id: generateUniqueId(),
-    name: 'New Component',
-    type: 'Service',
-    x: 0,
-    y: 0,
-    inputs: [],
-    outputs: [],
-    color: '#f3f4f6',
-    editingName: false,
-    editingType: false
+const addComponent = (type) => {
+  const position = findNonCollidingPosition()
+  
+  if (type === 'component') {
+    const newComponent = {
+      id: generateUniqueId(),
+      name: 'New Component',
+      type: 'Service',
+      x: position.x,
+      y: position.y,
+      inputs: [],
+      outputs: [],
+      color: '#f3f4f6',
+      editingName: false,
+      editingType: false
+    }
+    components.value.push(newComponent)
+  } else if (type === 'notice') {
+    const newNotice = {
+      id: generateUniqueId(),
+      text: '',
+      x: position.x,
+      y: position.y,
+      color: '#fff3cd'
+    }
+    notices.value.push(newNotice)
   }
-  
-  const position = findNonCollidingPosition(newComponent)
-  newComponent.x = position.x
-  newComponent.y = position.y
-  
-  components.value.push(newComponent)
 }
 
-const deleteComponent = (componentId) => {
-  components.value = components.value.filter(c => c.id !== componentId)
+const deleteComponent = (id) => {
+  components.value = components.value.filter(c => c.id !== id)
+  notices.value = notices.value.filter(n => n.id !== id)
   relations.value = relations.value.filter(r => 
-    r.fromComponent !== componentId && r.toComponent !== componentId
+    r.fromComponent !== id && r.toComponent !== id
   )
 }
 
